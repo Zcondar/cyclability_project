@@ -2,10 +2,6 @@ import psycopg2
 import csv
 import pprint
 
-business_stats_data = list(csv.DictReader(open('BusinessStats.csv')))
-pprint.pprint(business_stats_data[0])
-
-
 def pgconnect():
     try:
         conn = psycopg2.connect(host='Cyclability.cquxnucnvz8p.ap-southeast-2.rds.amazonaws.com',
@@ -38,6 +34,19 @@ def pgexec(conn, sqlcmd, args, msg, silent=False):
                     print(e)
     return retval
 
+def clean_empty_string(data):
+    for row in data:
+        for key, value in row.items():
+            if value == "":
+                row[key] = None
+
+business_stats_data = list(csv.DictReader(open('BusinessStats.csv')))
+print(business_stats_data[-5])
+
+clean_empty_string(business_stats_data)
+
+print(business_stats_data[-5])
+
 
 # 1st: login to database
 conn = pgconnect()
@@ -60,7 +69,9 @@ pgexec(conn, business_stats_schema, None, "Create Table BusinessStats")
 
 # 3nd: load data
 # IMPORTANT: make sure the header line of CSV is without spaces!
+
 insert_stmt = """INSERT INTO BusinessStats(area_id,num_businesses,retail_trade,accommodation_and_food_services,health_care_and_social_assistance,education_and_training,arts_and_recreation_services) VALUES (%(area_id)s, %(num_businesses)s, %(retail_trade)s, %(accommodation_and_food_services)s,%(health_care_and_social_assistance)s, %(education_and_training)s, %(arts_and_recreation_services)s)"""
+
 for row in business_stats_data:
     pgexec(conn, insert_stmt, row, "row inserted")
 
