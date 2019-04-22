@@ -3,11 +3,12 @@ import csv
 
 def pgconnect():
     try:
+        # adding options properties to set the schema
         conn = psycopg2.connect(host='Cyclability.cquxnucnvz8p.ap-southeast-2.rds.amazonaws.com',
                                 database='postgres',
                                 user='team',
-                                password='password')
-
+                                password='password',
+                                options=f'-c search_path=cyclability')
         print('connected')
     except Exception as e:
         print("unable to connect to the database")
@@ -58,6 +59,7 @@ def pgquery(conn, sqlcmd, args, silent=False):
     return retval
 
 
+# function that takes the data and if the value is empty, change it to NULL
 def clean_empty_string(data):
     for row in data:
         for key, value in row.items():
