@@ -41,6 +41,7 @@ def pgquery(conn, sqlcmd, args, silent=False):
         will print out on screen the result set of the query
         error and transaction handling built-in """
     retval = False
+    result = []
     with conn:
         with conn.cursor() as cur:
             try:
@@ -50,11 +51,11 @@ def pgquery(conn, sqlcmd, args, silent=False):
                     cur.execute(sqlcmd, args)
                 if silent == False:
                     for record in cur:
-                        print(record)
+                        result.append(record)
                 retval = True
             except Exception as e:
                 if silent == False:
                     print("db read error: ")
                     print(e)
-    return retval
+    return result
 
