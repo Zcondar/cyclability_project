@@ -25,12 +25,15 @@ def fix_NULL(item):
 def update_service_balance(conn):
     subquery = """SELECT * FROM neighbourhoods JOIN businessstats USING (area_id);"""
     result = pgquery(conn, subquery, None)
+
     for row in result:
+
         recreation = row[-1]
         education = row[-2]
         health = row[-3]
         food = row[-4]
         retail = row[-5]
+
         recreation = fix_NULL(recreation)
         education = fix_NULL(education)
         food = fix_NULL(food)
@@ -41,11 +44,10 @@ def update_service_balance(conn):
         if (sum == 0):
             continue
         
-
         service_balance = (education * 5 + food * 4 + retail * 3 + recreation * 2 + health) / sum
 
-        query = """UPDATE neighbourhoods SET service_balance = {} WHERE area_id = {}""".format(service_balance, result[0])
-        pgexec(conn, query, None, "Set service balance of area " + str(result[0]) + " to " + str(service_balance))
+        query = """UPDATE neighbourhoods SET service_balance = {} WHERE area_id = {}""".format(service_balance, row[0])
+        pgexec(conn, query, None, "Set service balance of area " + str(row[0]) + " to " + str(service_balance))
         
 
 if __name__ == "__main__":
@@ -60,6 +62,7 @@ if __name__ == "__main__":
 
     update_service_balance(conn)
 
+    conn.close()
 
 
 
