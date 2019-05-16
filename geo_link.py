@@ -3,6 +3,7 @@ from pg_tools import pgquery
 from pg_tools import pgconnect
 from pg_tools import pgexec
 import re
+from scores import create_column
 
 sf = shapefile.Reader("1270055001_sa2_2016_aust_shape/SA2_2016_AUST.shp", encoding="iso-8859-1")
 # which shpe type is it?
@@ -13,15 +14,10 @@ print(sf.fields)
 for i in range(0, 10):
     print(sf.record(i))
 
-query = """CREATE TABLE geom_locations (
-            area_id INT PRIMARY KEY,
-            geom GEOMETRY(Polygon,4326)); 
-            """
 conn = pgconnect()
-pgexec(conn, "DROP TABLE IF EXISTS geom_locations;", None, "Drop geom_locations")
-pgexec(conn, query, None, "Create geom_locations")
+create_column(conn, "geom", "neighbourhoods", "GEOMETRY(Polygon, 4326)")
 
-insert_stmt = """INSERT INTO geom_locations VALUES ( %(area_id)s, ST_GEOMFROMTEXT(%(geom)s, 4326) )"""
+update_stmt = """UPDATE neighbourhoods SET geom = ST_GEOMFROMTEXT(%(geom)s, 4326) WHERE area_id = %(area_id)s;"""
 
 shapes = sf.shapes()
 records= sf.records()
@@ -57,7 +53,7 @@ for i in range(0, len(shapes)):
         row['geom'] = re.sub(",$", "))", row['geom'])
         
         # finally: insert new row into the table
-        pgexec(conn, insert_stmt, args=row, msg="inserted "+str(record[2]))
+        pgexec(conn, update_stmt, args=row, msg="inserted "+str(record[2]))
 
 index_command = "CREATE INDEX area_idx ON geom_locations USING GIST (geom);"
 pgexec(conn, index_command, None, "Created index")
