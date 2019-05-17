@@ -10,7 +10,7 @@ def fix_NULL(item):
     return item
 
 conn = pgconnect()
-create_column(conn, "cyclability_score", "neighbourhoods", "INT")
+create_column(conn, "cyclability_score", "neighbourhoods", "DOUBLE PRECISION")
 
 avg_pd = pgquery(conn, "SELECT AVG(population_density) FROM neighbourhoods;", None)
 avg_dd = pgquery(conn, "SELECT AVG(dwelling_density) FROM neighbourhoods;", None)
@@ -44,7 +44,6 @@ for row in result:
     z_score += (float(fix_NULL(row[-5])) - avg_dd) / std_dd
     z_score += (float(fix_NULL(row[-6])) - avg_pd) / std_pd
     z_score += additional_score()
-    z_score = int(z_score)
 
     query = "UPDATE neighbourhoods SET cyclability_score = {} WHERE area_id = {}".format(z_score, row[0])
     pgexec(conn, query, None, "Updating score for {}".format(row[1]))

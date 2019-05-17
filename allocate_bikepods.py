@@ -5,7 +5,7 @@ from scores import create_column
 
 conn = pgconnect()
 
-#alter bikesharing pods
+
 create_column(conn, "geom", "bikesharingpods", "geometry(POINT, 4326);")
 pgexec(conn, "update bikesharingpods set geom=st_SetSrid(st_MakePoint(longitude, latitude), 4326);", None, "")
 
