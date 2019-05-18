@@ -1,0 +1,15 @@
+import PyPDF2
+import codecs
+totalstr=''
+for i in range(7):
+    path='text{}.pdf'.format(i+1)
+    test=PyPDF2.PdfFileReader(path)
+    maxpage=test.numPages
+    li=[]
+    for i in range(maxpage):
+        li.append(test.getPage(i))
+    for i in range(maxpage):
+        totalstr+=li[i].extractText()
+text_file = codecs.open("Output.txt", "w","utf-8")
+text_file.write(totalstr)
+text_file.close()
