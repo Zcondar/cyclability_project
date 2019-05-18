@@ -1,0 +1,34 @@
+import codecs
+from urllib.request import urlopen
+from bs4 import BeautifulSoup
+totalstr=''
+for i in range(7):
+    path='text{}.pdf'.format(i+1)
+    test=PyPDF2.PdfFileReader(path)
+    maxpage=test.numPages
+    li=[]
+    for i in range(maxpage):
+        li.append(test.getPage(i))
+    for i in range(maxpage):
+        totalstr+=li[i].extractText()
+webpath=[]
+webpath.append("https://www.sydney.com/things-to-do/adventure-and-sport/cycling")
+webpath.append("https://www.nationalparks.nsw.gov.au/things-to-do/picnic-areas/moola-picnic-area")
+webpath.append("https://www.nationalparks.nsw.gov.au/things-to-do/lookouts/north-head")
+webpath.append("https://www.nationalparks.nsw.gov.au/things-to-do/cycling-trails/pennant-hills-west-pymble-fire-trail")
+webpath.append("https://www.campbelltown.nsw.gov.au/ServicesandFacilities/BicycleEducationCentre")
+webpath.append("https://www.nationalparks.nsw.gov.au/visit-a-park/parks/dharug-national-park")
+webpath.append("https://www.bikehiresydneyolympicpark.com.au/")
+webpath.append("https://www.nationalparks.nsw.gov.au/visit-a-park/parks/heathcote-national-park")
+webpath.append("https://www.nationalparks.nsw.gov.au/things-to-do/cycling-trails/old-great-north-road-bike-ride")
+webpath.append("https://www.nationalparks.nsw.gov.au/things-to-do/cycling-trails/10b-cycling-trail")
+st=''
+for i in webpath:
+    url =i
+    handle_url = urlopen(url)
+    bs = BeautifulSoup(handle_url, 'lxml')
+    st+=bs.get_text()
+totalstr+=st
+text_file = codecs.open("Output.txt", "w","utf-8")
+text_file.write(totalstr)
+text_file.close()
