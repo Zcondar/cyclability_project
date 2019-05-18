@@ -1,4 +1,5 @@
 import codecs
+import PyPDF2
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 totalstr=''
