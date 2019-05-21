@@ -1,0 +1,32 @@
+nlp_result={'Lavender Bay': 1, 'Enmore': 1, 'Redfern': 0, 'Kings Cross': 0, 'Newtown South': 1, 'Paddington': 0, 'Marrickville': 2, 'Zetland': 0, 'Elizabeth Bay': 1, 'St Leonards': 0, 'McMahons Point': 1, 'Glebe': 1, 'Summer Hill': 2, 'Haymarket': 2, 'Potts Point': 1, 'Randwick': 2, 'Clovelly': 0, 'Balmain': 1, 'Erskineville': 0, 'Surry Hills': 2, 'Darlinghurst': 0, 'Coogee': 0, 'Annandale': 0, 'Darlington': 0, 'Chippendale': 0, 'Woolloomooloo': 0, 'Petersham': 0, 'Manly': 0, 'North Sydney': 11, 'Newtown North': 5, 'Pyrmont': 2, 'Leichardt': 0, 'Neutral Bay': 1, 'Artarmon': 1, 'Fairlight': 7, 'Sydney CBD': 10, 'Newtown': 1, 'McMahons Point ': 1, 'Rozelle': 2, 'Ultimo': 0, 'Birchgrove': 0, 'Millers Point': 1, 'Bondi': 0, 'Bondi Junction': 1, 'Camperdown': 0, 'Bondi North': 4, 'Chatswood': 3, 'Milsons Point': 1, 'Mosman': 0, 'Bronte': 0, 'Dulwich Hill': 1, 'Waverton': 0, 'Forest Lodge': 1, 'Cremorne': 0, 'Balmain East': 2, 'Kirribilli': 1, 'Parramatta': 3, 'Lane Cove': 3, 'Kingsford': 0, 'Kensington': 0, 'Coogee Beach': 0, 'Church Point': 2, 'Waterloo': 0, 'Ashfield ': 0, 'Tamarama': 0, 'Crows Nest': 1, 'UNSW': 11, 'Rose Bay': 1, 'Charing Cross': 0, 'Leichhardt': 1, 'Maroubra': 0, 'Bondi Beach': 0, 'Macquarie Park': 2, 'Stanmore': 3, 'Drummoyne': 0, 'Ashfield': 0, 'Alexandria': 1, 'Coogee North': 4, 'Kings cross': 0, 'Double Bay': 1, 'Lewisham': 1, 'Rushcutters Bay': 4, 'Bondi South': 0, 'Edgecliff': 0, 'Coogee South': 0, 'St Marys Cathedral': 1}
+import csv
+path=open("BikeSharingPods.csv","r")
+reader = list(csv.reader(path))
+ans={}
+for i in range(1,len(reader)):
+    name=reader[i][1]
+    prefix=""
+    for ii in range(len(name)-1):
+        if name[ii]==" " and name[ii+1]=='-' or name[ii]=="-" and name[ii+1]==' ':
+            break
+        else:
+            prefix+=name[ii]
+    print(prefix)
+    try:
+        ans[name]=nlp_result[prefix]
+    except:
+        ans[name]=0
+print(ans)
+
+def update_nlp_score(conn,ans):
+    subquery = """SELECT * FROM neighbourhoods;"""
+    result = pgquery(conn, subquery, None)
+    for row in result:
+        name=row[1]
+        try:
+            nlp_s=ans[name]
+        except:
+            nlp_s=0
+        query = """UPDATE neighbourhoods SET NLP_score = {} WHERE area_name = {}""".format(nlp_s,name)
+        pgexec(conn, query, None, "update " + str(nlp_s) + " to " + str(name))
+    
