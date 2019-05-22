@@ -148,4 +148,6 @@ if __name__ == "__main__":
     for k, v in queries.items():
         create_table(k, v)
     
+    pgexec(conn, "CREATE INDEX land_area_idx ON neighbourhoods(land_area);", None, "create index on land area")
+    pgexec(conn, "CREATE INDEX num_businesses_idx ON businessstats(num_businesses)")
     conn.close()
