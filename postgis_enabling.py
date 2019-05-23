@@ -1,17 +1,19 @@
 from pg_tools import pgquery
 from pg_tools import pgconnect
+from pg_tools import pgexec
 
 
-cmd = """create extension postgis;
+cmd = """
+create extension IF NOT EXISTS postgis;
 
-create extension fuzzystrmatch;
+create extension IF NOT EXISTS fuzzystrmatch;
 
-create extension postgis_tiger_geocoder;
+create extension IF NOT EXISTS postgis_tiger_geocoder;
 
-create extension postgis_topology;
+create extension IF NOT EXISTS postgis_topology;
 
 """
 
 conn = pgconnect()
-pgquery(conn, cmd, "enabling postgis")
+pgexec(conn, cmd, None, "enabling postgis")
 

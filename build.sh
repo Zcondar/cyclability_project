@@ -1,6 +1,7 @@
 #!/bin/bash
 
 python3 sql_setup.py
+python3 postgis_enabling.py
 python3 scores.py
 python3 geo_link.py
 python3 allocate_bikepods.py

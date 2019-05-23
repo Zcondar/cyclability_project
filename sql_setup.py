@@ -135,6 +135,10 @@ if __name__ == "__main__":
                                         %(parent_area_id)s)"""
     # =====QUERIES END=====
 
+    #force drop and create schema
+    pgexec(conn, "DROP SCHEMA IF EXISTS cyclability CASCADE;", None, "drop shema")
+    pgexec(conn, "CREATE SCHEMA cyclability;", None, "create schema")
+
     # Queries stored in key value pair, with file name as key, and queries stored as lists
     queries = {
         'BusinessStats': [business_stats_schema, business_stats_insert_stmt],
@@ -148,6 +152,8 @@ if __name__ == "__main__":
     for k, v in queries.items():
         create_table(k, v)
     
+    #create indexes
     pgexec(conn, "CREATE INDEX land_area_idx ON neighbourhoods(land_area);", None, "create index on land area")
-    pgexec(conn, "CREATE INDEX num_businesses_idx ON businessstats(num_businesses)")
+    pgexec(conn, "CREATE INDEX num_businesses_idx ON businessstats(num_businesses)", None, "create index on business")
+
     conn.close()

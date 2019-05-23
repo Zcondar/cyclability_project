@@ -55,5 +55,5 @@ for i in range(0, len(shapes)):
         # finally: insert new row into the table
         pgexec(conn, update_stmt, args=row, msg="inserted "+str(record[2]))
 
-index_command = "CREATE INDEX area_idx ON geom_locations USING GIST (geom);"
-pgexec(conn, index_command, None, "Created index")
+index_command = "CREATE INDEX area_idx ON neighbourhoods USING GIST (geom);"
+pgexec(conn, index_command, None, "Created spatial index")
