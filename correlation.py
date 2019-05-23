@@ -1,12 +1,12 @@
 import pandas as pd
-import numpy as np
+# import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sb; sb.set()
-import math
+# import math
 from pg_tools import pgconnect
-from pg_tools import pgexec
+# from pg_tools import pgexec
 from pg_tools import pgquery
-from scores import create_column
+# from scores import create_column
 
 conn = pgconnect()
 result = pgquery(conn, "SELECT * FROM neighbourhoods JOIN censusstats USING (area_id) ORDER BY area_id;", None)
