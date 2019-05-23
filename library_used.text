@@ -1,0 +1,6 @@
+Extra Python libraries required:
+
+PyPDF2 1.26.0
+spacy
+nltk
+codecs
